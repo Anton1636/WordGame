@@ -27,11 +27,16 @@ public class WordList : MonoBehaviour
         S = this;
     }
 
-    private void Start()
+    public void Init()
     {
         lines = wordListText.text.Split('\n');
         totalLines = lines.Length;
         StartCoroutine(ParseLines());
+    }
+
+    static public void INIT()
+    {
+        S.Init();
     }
 
     public IEnumerator ParseLines()
@@ -45,15 +50,15 @@ public class WordList : MonoBehaviour
         {
             word = lines[currLine];
 
-            if(word.Length == wordLengthMax)
+            if (word.Length == wordLengthMax)
             {
                 longWords.Add(word);
             }
-            if(word.Length >= wordLengthMin && word.Length <= wordLengthMax)
+            if (word.Length >= wordLengthMin && word.Length <= wordLengthMax)
             {
                 words.Add(word);
             }
-            if(currLine % numToParseBeforeYield == 0)
+            if (currLine % numToParseBeforeYield == 0)
             {
                 longWordCount = longWords.Count;
                 wordCount = words.Count;
@@ -63,6 +68,7 @@ public class WordList : MonoBehaviour
         }
         longWordCount = longWords.Count;
         wordCount = words.Count;
+        gameObject.SendMessage("WordListParseComplete");
     }
 
     static public List<string> GET_WORDS()

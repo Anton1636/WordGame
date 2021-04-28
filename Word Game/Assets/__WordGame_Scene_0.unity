@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 345694712}
   - component: {fileID: 345694711}
   - component: {fileID: 345694710}
+  - component: {fileID: 345694713}
   m_Layer: 0
   m_Name: _MainCamera
   m_TagString: MainCamera
@@ -179,6 +180,36 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 345694709}
   m_Enabled: 1
+--- !u!114 &345694713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345694709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33eed45ffb699284daf61d5f5e136b15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabLetter: {fileID: 8104681898703263845, guid: fff7d8ba8a8b09245b8e24c14696f77d, type: 3}
+  wordArea:
+    serializedVersion: 2
+    x: -24
+    y: 19
+    width: 48
+    height: 28
+  letterSize: 1.5
+  showAllWyrds: 1
+  bigLetterSize: 4
+  bigColorDim: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+  bigColorSelected: {r: 1, g: 0.9, b: 0.7, a: 1}
+  bigLetterCenter: {x: 0, y: -16, z: 0}
+  mode: 0
+  currLevel: {fileID: 0}
+  wyrds: []
+  bigLetters: []
+  bigLettersActive: []
 --- !u!20 &345694714
 Camera:
   m_ObjectHideFlags: 0
