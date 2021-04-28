@@ -58,13 +58,14 @@
   <ItemGroup>
     <Compile Include="Assets\__Scripts\ProtoTools\PT_XMLReader.cs" />
     <Compile Include="Assets\__Scripts\ProtoTools\Utils.cs" />
+    <Compile Include="Assets\__Scripts\WordLevel.cs" />
+    <Compile Include="Assets\__Scripts\Wyrd.cs" />
     <Compile Include="Assets\__Scripts\WordList.cs" />
     <Compile Include="Assets\__Scripts\ProtoTools\FloatingScore.cs" />
-    <Compile Include="Assets\__Scripts\ProtoTools\Scoreboards.cs" />
-    <Compile Include="Assets\__Scripts\WordGame.cs" />
-    <Compile Include="Assets\__Scripts\WordLevel.cs" />
     <Compile Include="Assets\__Scripts\Letter.cs" />
-    <Compile Include="Assets\__Scripts\Wyrd.cs" />
+    <Compile Include="Assets\__Scripts\WordGame.cs" />
+    <Compile Include="Assets\__Scripts\ProtoTools\Scoreboards.cs" />
+    <Compile Include="Assets\__Scripts\ScoreManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Resources\2of12inf.txt" />

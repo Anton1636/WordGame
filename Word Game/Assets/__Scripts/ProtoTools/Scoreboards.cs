@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 
 // The Scoreboard class manages showing the score to the player
-public class Scoreboard : MonoBehaviour {
-    public static Scoreboard S; // The singleton for Scoreboard
+public class Scoreboards : MonoBehaviour {
+    public static Scoreboards S; // The singleton for Scoreboard
 
     [Header("Set in Inspector")]
     public GameObject       prefabFloatingScore;

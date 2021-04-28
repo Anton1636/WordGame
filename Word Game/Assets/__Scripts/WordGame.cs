@@ -26,6 +26,7 @@ public class WordGame : MonoBehaviour
     public Color bigColorDim = new Color(0.8f, 0.8f, 0.8f);
     public Color bigColorSelected = new Color(1f, 0.9f, 0.7f);
     public Vector3 bigLetterCenter = new Vector3(0, -16, 0);
+    public Color[] wyrdPalette;
 
     [Header("Set Dynamically")]
     public GameMode mode = GameMode.preGame;
@@ -33,6 +34,8 @@ public class WordGame : MonoBehaviour
     public List<Wyrd> wyrds;
     public List<Letter> bigLetters;
     public List<Letter> bigLettersActive;
+    public string testWorld;
+    private string upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private Transform letterAnchor;
     private Transform bigLetterAnchor;
@@ -137,14 +140,22 @@ public class WordGame : MonoBehaviour
             for (int j = 0; j < word.Length; j++)
             {
                 c = word[j];
+
                 gameObject = Instantiate<GameObject>(prefabLetter);
                 gameObject.transform.SetParent(letterAnchor);
+
                 letter = gameObject.GetComponent<Letter>();
                 letter.c = c;
+
                 pos = new Vector3(wordArea.x + left + j * letterSize, wordArea.y, 0);
                 pos.y -= (i % numRows) * letterSize;
+
+                letter.posImmediate = pos + Vector3.up * (20 + i % numRows);
                 letter.pos = pos;
+                letter.timeStart = Time.time + i * 0.05f;
+
                 gameObject.transform.localScale = Vector3.one * letterSize;
+
                 wyrd.Add(letter);
             }           
 
@@ -153,6 +164,7 @@ public class WordGame : MonoBehaviour
                 wyrd.visible = true;
             }
 
+            wyrd.color = wyrdPalette[word.Length - WordList.WORD_LENGTH_MIN];
             wyrds.Add(wyrd);
 
             if(i % numRows == numRows -1)
@@ -176,6 +188,12 @@ public class WordGame : MonoBehaviour
 
             gameObject.transform.localScale = Vector3.one * bigLetterSize;
             pos = new Vector3(0, -100, 0);
+            
+            letter.posImmediate = pos;
+            letter.pos = pos;
+            letter.timeStart = Time.time + currLevel.subWords.Count * 0.05f;
+            letter.easingCuve = Easing.Sin + "-0.18";
+
             color = bigColorDim;
 
             letter.color = color;
@@ -215,5 +233,140 @@ public class WordGame : MonoBehaviour
             pos.y += bigLetterSize * 1.25f;
             bigLettersActive[i].pos = pos;
         }
+    }
+
+    private void Update()
+    {
+        Letter ltr;
+        char c;
+
+        switch(mode)
+        {
+            case GameMode.inLevel:
+                foreach (char cIt in Input.inputString)
+                {
+                    c = System.Char.ToUpperInvariant(cIt);
+
+                    if(upperCase.Contains(c))
+                    {
+                        ltr = FindNextLetterByChar(c);
+
+                        if(ltr != null)
+                        {
+                            testWorld += c.ToString();
+                            bigLettersActive.Add(ltr);
+                            bigLetters.Remove(ltr);
+                            ltr.color = bigColorSelected;
+                            ArrangeBigLetters();
+                        }
+                    }
+                    if(c == '\b')
+                    {
+                        if(bigLettersActive.Count == 0)
+                        {
+                            return;
+                        }
+                        if(testWorld.Length > 1)
+                        {
+                            testWorld = testWorld.Substring(0, testWorld.Length - 1);
+                        }
+                        else
+                        {
+                            testWorld = "";
+                        }
+
+                        ltr = bigLettersActive[bigLettersActive.Count - 1];
+                        bigLettersActive.Remove(ltr);
+                        bigLetters.Add(ltr);
+                        ltr.color = bigColorDim;
+                        ArrangeBigLetters();
+                    }
+                    if(c == '\n' || c == '\r')
+                    {
+                        CheckWorld();
+                    }
+                    if(c == ' ')
+                    {
+                        bigLetters = ShuffleLetter(bigLetters);
+                        ArrangeBigLetters();
+                    }
+                }
+                break;
+        }
+    }
+
+    private Letter FindNextLetterByChar(char c)
+    {
+        foreach (Letter ltr in bigLetters)
+        {
+            if(ltr.c == c)
+            {
+                return (ltr);
+            }
+        }
+        return (null);
+    }
+
+    private void CheckWorld()
+    {
+        string subWorld;
+        bool foundTestWorld = false;
+        List<int> containedWorlds = new List<int>();
+
+        for (int i = 0; i < currLevel.subWords.Count; i++)
+        {
+            if(wyrds[i].found)
+            {
+                continue;
+            }
+
+            subWorld = currLevel.subWords[i];
+
+            if(string.Equals(testWorld,subWorld))
+            {
+                HighlightWyrd(i);
+                ScoreManager.SCORE(wyrds[i], 1);
+                foundTestWorld = true;
+            }
+            else if(testWorld.Contains(subWorld))
+            {
+                containedWorlds.Add(i);
+            }
+        }
+
+        if(foundTestWorld)
+        {
+            int numContained = containedWorlds.Count;
+            int index;
+
+            for (int i = 0; i < containedWorlds.Count; i++)
+            {
+                index = numContained - i - 1;
+                HighlightWyrd(containedWorlds[index]);
+                ScoreManager.SCORE(wyrds[containedWorlds[index]], i + 2);
+            }
+        }
+
+        ClearBigLettersActive();
+    }
+
+    private void HighlightWyrd(int i)
+    {
+        wyrds[i].found = true;
+        wyrds[i].color = (wyrds[i].color + Color.white) / 2f;
+        wyrds[i].visible = true;
+    }
+
+    private void ClearBigLettersActive()
+    {
+        testWorld = "";
+
+        foreach (Letter ltr in bigLettersActive)
+        {
+            bigLetters.Add(ltr);
+            ltr.color = bigColorDim;
+        }
+        bigLettersActive.Clear();
+        ArrangeBigLetters();
     }
 }
